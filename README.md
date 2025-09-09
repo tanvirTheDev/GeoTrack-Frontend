@@ -1,46 +1,180 @@
-# Getting Started with Create React App
+# GeoTrack Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, responsive frontend application for the GeoTrack Real-time Delivery Tracking System built with React, TypeScript, and Tailwind CSS.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- **Modern UI/UX**: Built with shadcn/ui components and Tailwind CSS
+- **Type Safety**: Full TypeScript implementation
+- **State Management**: Redux Toolkit with RTK Query
+- **Role-Based Access**: Super Admin, Organization Admin, and Delivery User roles
+- **Real-time Tracking**: Socket.io integration for live location updates
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+- **Authentication**: JWT-based authentication with refresh tokens
+- **Maps Integration**: Google Maps API ready for location tracking
 
-### `npm start`
+## 🛠️ Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Frontend**: React 18, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui
+- **State Management**: Redux Toolkit, RTK Query
+- **Routing**: React Router v6
+- **HTTP Client**: Axios
+- **Real-time**: Socket.io Client
+- **Maps**: Google Maps React, Leaflet.js
+- **Icons**: Lucide React
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 📁 Project Structure
 
-### `npm test`
+```
+src/
+├── components/          # Reusable UI components
+│   ├── common/         # Common components (Button, Input, etc.)
+│   ├── forms/          # Form components
+│   ├── maps/           # Map-related components
+│   └── ui/             # shadcn/ui components
+├── pages/              # Page components
+│   ├── auth/           # Authentication pages
+│   ├── admin/          # Organization Admin pages
+│   ├── superAdmin/     # Super Admin pages
+│   └── shared/         # Shared pages (Profile, Settings)
+├── store/              # Redux store and slices
+│   └── slices/         # Feature-based slices
+├── services/           # API service functions
+├── hooks/              # Custom React hooks
+├── contexts/           # React contexts
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+├── config/             # Configuration files
+└── styles/             # Global styles
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Getting Started
 
-### `npm run build`
+### Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js 16+
+- npm or yarn
+- Backend API running
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Install dependencies:**
 
-### `npm run eject`
+   ```bash
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. **Set up environment variables:**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```bash
+   cp .env.example .env
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   Update `.env` with your configuration:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+   ```env
+   REACT_APP_API_BASE_URL=http://localhost:5000/api
+   REACT_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+   REACT_APP_SOCKET_URL=http://localhost:5000
+   ```
 
-## Learn More
+3. **Start the development server:**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```bash
+   npm start
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. **Open your browser:**
+   Navigate to `http://localhost:3000`
+
+## 🎨 UI Components
+
+The project uses shadcn/ui components with Tailwind CSS for styling:
+
+- **Button**: Various variants and sizes
+- **Input**: Form inputs with validation
+- **Card**: Content containers
+- **Table**: Data tables
+- **Dialog**: Modals and overlays
+- **Badge**: Status indicators
+- **Switch**: Toggle controls
+- **Separator**: Visual dividers
+
+## 🔐 Authentication
+
+The app supports three user roles:
+
+- **Super Admin**: Full system access
+- **Organization Admin**: Organization-specific access
+- **Delivery User**: Basic tracking features
+
+Authentication is handled via JWT tokens with automatic refresh.
+
+## 🗺️ Maps Integration
+
+Ready for Google Maps and Leaflet.js integration:
+
+- Live tracking maps
+- Route history visualization
+- Location markers and controls
+
+## 📱 Responsive Design
+
+Built with mobile-first approach:
+
+- Mobile-optimized layouts
+- Touch-friendly interfaces
+- Responsive navigation
+- Adaptive components
+
+## 🧪 Testing
+
+Run tests with:
+
+```bash
+npm test
+```
+
+## 🏗️ Building for Production
+
+```bash
+npm run build
+```
+
+## 📦 Available Scripts
+
+- `npm start` - Start development server
+- `npm build` - Build for production
+- `npm test` - Run tests
+- `npm eject` - Eject from Create React App
+
+## 🔧 Configuration
+
+### Tailwind CSS
+
+Configured with shadcn/ui design tokens and custom utilities.
+
+### TypeScript
+
+Strict mode enabled with comprehensive type definitions.
+
+### Redux Store
+
+Organized by feature with RTK Query for API management.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions, please contact the development team.
