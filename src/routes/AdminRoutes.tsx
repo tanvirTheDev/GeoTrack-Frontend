@@ -21,7 +21,6 @@ const AdminRoutes: React.FC = () => {
         <Route path="/emergency-requests" element={<EmergencyRequests />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/profile" element={<Profile />} />
-        {/* <Route path="/settings" element={<Settings />} /> */}
       </Routes>
     </DashboardLayout>
   );
