@@ -8,7 +8,6 @@ import LiveTracking from "../pages/OrganizationAdmin/LiveTracking/LiveTracking";
 import Reports from "../pages/OrganizationAdmin/Reports/Reports";
 import TrackingHistory from "../pages/OrganizationAdmin/TrackingHistory/TrackingHistory";
 import Profile from "../pages/shared/Profile/Profile";
-import Settings from "../pages/shared/Settings/Settings";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -22,7 +21,7 @@ const AdminRoutes: React.FC = () => {
         <Route path="/emergency-requests" element={<EmergencyRequests />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
+        {/* <Route path="/settings" element={<Settings />} /> */}
       </Routes>
     </DashboardLayout>
   );

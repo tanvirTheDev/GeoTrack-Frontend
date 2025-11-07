@@ -1,29 +1,29 @@
 export const config = {
   // API Configuration
   API_BASE_URL:
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api",
-  SOCKET_URL: process.env.REACT_APP_SOCKET_URL || "http://localhost:5000",
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  SOCKET_URL: import.meta.env.VITE_SOCKET_URL || "http://localhost:5000",
 
   // Google Maps API
-  GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
+  GOOGLE_MAPS_API_KEY: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
 
   // App Configuration
-  APP_NAME: process.env.REACT_APP_APP_NAME || "GeoTrack",
-  VERSION: process.env.REACT_APP_VERSION || "1.0.0",
-  ENVIRONMENT: process.env.REACT_APP_ENVIRONMENT || "development",
+  APP_NAME: import.meta.env.VITE_APP_NAME || "GeoTrack",
+  VERSION: import.meta.env.VITE_APP_VERSION || "1.0.0",
+  ENVIRONMENT: import.meta.env.VITE_APP_ENVIRONMENT || "development",
 
   // Feature Flags
   ENABLE_REAL_TIME_TRACKING:
-    process.env.REACT_APP_ENABLE_REAL_TIME_TRACKING === "true",
+    import.meta.env.VITE_ENABLE_REAL_TIME_TRACKING === "true",
   ENABLE_EMERGENCY_FEATURES:
-    process.env.REACT_APP_ENABLE_EMERGENCY_FEATURES === "true",
+    import.meta.env.VITE_ENABLE_EMERGENCY_FEATURES === "true",
   ENABLE_PAYMENT_INTEGRATION:
-    process.env.REACT_APP_ENABLE_PAYMENT_INTEGRATION === "true",
+    import.meta.env.VITE_ENABLE_PAYMENT_INTEGRATION === "true",
 
   // SSL Commerce
-  SSL_COMMERCE_STORE_ID: process.env.REACT_APP_SSL_COMMERCE_STORE_ID || "",
+  SSL_COMMERCE_STORE_ID: import.meta.env.VITE_SSL_COMMERCE_STORE_ID || "",
   SSL_COMMERCE_IS_SANDBOX:
-    process.env.REACT_APP_SSL_COMMERCE_IS_SANDBOX === "true",
+    import.meta.env.VITE_SSL_COMMERCE_IS_SANDBOX === "true",
 
   // Default values
   DEFAULT_PAGE_SIZE: 10,
