@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import DashboardLayout from "../components/common/Layout/DashboardLayout";
-import Dashboard from "../pages/admin/Dashboard/Dashboard";
-import DeliveryUsers from "../pages/admin/DeliveryUsers/DeliveryUsers";
-import EmergencyRequests from "../pages/admin/EmergencyRequests/EmergencyRequests";
-import LiveTracking from "../pages/admin/LiveTracking/LiveTracking";
-import Reports from "../pages/admin/Reports/Reports";
-import TrackingHistory from "../pages/admin/TrackingHistory/TrackingHistory";
+import Dashboard from "../pages/OrganizationAdmin/Dashboard/Dashboard";
+import DeliveryUsers from "../pages/OrganizationAdmin/DeliveryUsers/DeliveryUsers";
+import EmergencyRequests from "../pages/OrganizationAdmin/EmergencyRequests/EmergencyRequests";
+import LiveTracking from "../pages/OrganizationAdmin/LiveTracking/LiveTracking";
+import Reports from "../pages/OrganizationAdmin/Reports/Reports";
+import TrackingHistory from "../pages/OrganizationAdmin/TrackingHistory/TrackingHistory";
 import Profile from "../pages/shared/Profile/Profile";
 import Settings from "../pages/shared/Settings/Settings";
 

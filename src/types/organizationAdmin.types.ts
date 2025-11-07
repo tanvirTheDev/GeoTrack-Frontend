@@ -63,9 +63,8 @@ export interface UpdateOrganizationAdminRequest {
   };
 }
 
-export interface ResetPasswordRequest {
-  newPassword: string;
-}
+// Re-export ResetPasswordRequest from auth.types to avoid duplication
+export type { ResetPasswordRequest } from "./auth.types";
 
 export interface UpdatePermissionsRequest {
   permissions: {

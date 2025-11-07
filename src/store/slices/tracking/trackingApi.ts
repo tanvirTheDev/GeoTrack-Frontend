@@ -1,17 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../../config/env";
-import { ApiResponse, PaginatedResponse } from "../../../types/common.types";
+import { ApiResponse } from "../../../types/common.types";
 import {
   ActiveTrackingUser,
   CreateEmergencyRequest,
   EmergencyRequest,
   LocationHistory,
+  LocationTracking,
   LocationUpdate,
-  RouteData,
   TrackingFilters,
   TrackingStats,
   UpdateLocationRequest,
-  UserTrackingStats,
 } from "../../../types/tracking.types";
 
 const baseQuery = fetchBaseQuery({
@@ -31,6 +30,7 @@ export const trackingApi = createApi({
   baseQuery,
   tagTypes: ["Tracking", "Location", "Emergency"],
   endpoints: (builder) => ({
+    // Delivery User Routes
     updateLocation: builder.mutation<
       ApiResponse<LocationUpdate>,
       UpdateLocationRequest
@@ -43,13 +43,21 @@ export const trackingApi = createApi({
       invalidatesTags: ["Tracking", "Location"],
     }),
 
-    getCurrentLocation: builder.query<ApiResponse<LocationUpdate>, void>({
+    getCurrentLocation: builder.query<ApiResponse<LocationTracking>, void>({
       query: () => "/tracking/location/current",
       providesTags: ["Location"],
     }),
 
     getLocationHistory: builder.query<
-      ApiResponse<PaginatedResponse<LocationHistory>>,
+      ApiResponse<{
+        history: LocationHistory[];
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          pages: number;
+        };
+      }>,
       TrackingFilters
     >({
       query: (params) => ({
@@ -64,19 +72,133 @@ export const trackingApi = createApi({
       CreateEmergencyRequest
     >({
       query: (body) => ({
-        url: "/tracking/emergency/request",
+        url: "/tracking/emergency",
         method: "POST",
         body,
       }),
       invalidatesTags: ["Emergency"],
     }),
 
-    getEmergencyHistory: builder.query<
-      ApiResponse<PaginatedResponse<EmergencyRequest>>,
+    startTracking: builder.mutation<ApiResponse<LocationTracking>, void>({
+      query: () => ({
+        url: "/tracking/tracking/start",
+        method: "POST",
+      }),
+      invalidatesTags: ["Tracking"],
+    }),
+
+    stopTracking: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: "/tracking/tracking/stop",
+        method: "POST",
+      }),
+      invalidatesTags: ["Tracking"],
+    }),
+
+    // Organization Admin Routes
+    getActiveLocations: builder.query<ApiResponse<LocationTracking[]>, void>({
+      query: () => "/tracking/org/locations/active",
+      providesTags: ["Tracking"],
+    }),
+
+    getUserLocation: builder.query<ApiResponse<LocationTracking>, string>({
+      query: (userId) => `/tracking/org/locations/user/${userId}`,
+      providesTags: (result, error, userId) => [
+        { type: "Location", id: userId },
+      ],
+    }),
+
+    getUserLocationHistory: builder.query<
+      ApiResponse<{
+        history: LocationHistory[];
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          pages: number;
+        };
+      }>,
+      { userId: string } & TrackingFilters
+    >({
+      query: ({ userId, ...params }) => ({
+        url: `/tracking/org/locations/user/${userId}/history`,
+        params,
+      }),
+      providesTags: ["Location"],
+    }),
+
+    getEmergencyRequests: builder.query<
+      ApiResponse<{
+        requests: EmergencyRequest[];
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          pages: number;
+        };
+      }>,
       TrackingFilters
     >({
       query: (params) => ({
-        url: "/tracking/emergency/history",
+        url: "/tracking/org/emergency",
+        params,
+      }),
+      providesTags: ["Emergency"],
+    }),
+
+    acknowledgeEmergencyRequest: builder.mutation<
+      ApiResponse<EmergencyRequest>,
+      string
+    >({
+      query: (requestId) => ({
+        url: `/tracking/org/emergency/${requestId}/acknowledge`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, requestId) => [
+        { type: "Emergency", id: requestId },
+        "Emergency",
+      ],
+    }),
+
+    resolveEmergencyRequest: builder.mutation<
+      ApiResponse<EmergencyRequest>,
+      string
+    >({
+      query: (requestId) => ({
+        url: `/tracking/org/emergency/${requestId}/resolve`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, requestId) => [
+        { type: "Emergency", id: requestId },
+        "Emergency",
+      ],
+    }),
+
+    getTrackingStats: builder.query<ApiResponse<TrackingStats>, void>({
+      query: () => "/tracking/org/stats",
+      providesTags: ["Tracking"],
+    }),
+
+    // Legacy endpoints for backward compatibility
+    getActiveUsers: builder.query<ApiResponse<ActiveTrackingUser[]>, void>({
+      query: () => "/tracking/org/locations/active",
+      providesTags: ["Tracking"],
+    }),
+
+    getEmergencyHistory: builder.query<
+      ApiResponse<{
+        requests: EmergencyRequest[];
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          pages: number;
+        };
+      }>,
+      TrackingFilters
+    >({
+      query: (params) => ({
+        url: "/tracking/org/emergency",
         params,
       }),
       providesTags: ["Emergency"],
@@ -87,8 +209,8 @@ export const trackingApi = createApi({
       string
     >({
       query: (id) => ({
-        url: `/tracking/emergency/${id}/acknowledge`,
-        method: "POST",
+        url: `/tracking/org/emergency/${id}/acknowledge`,
+        method: "PATCH",
       }),
       invalidatesTags: (result, error, id) => [
         { type: "Emergency", id },
@@ -98,91 +220,38 @@ export const trackingApi = createApi({
 
     resolveEmergency: builder.mutation<ApiResponse<EmergencyRequest>, string>({
       query: (id) => ({
-        url: `/tracking/emergency/${id}/resolve`,
-        method: "POST",
+        url: `/tracking/org/emergency/${id}/resolve`,
+        method: "PATCH",
       }),
       invalidatesTags: (result, error, id) => [
         { type: "Emergency", id },
         "Emergency",
       ],
     }),
-
-    getActiveUsers: builder.query<ApiResponse<ActiveTrackingUser[]>, void>({
-      query: () => "/realtime/active-users",
-      providesTags: ["Tracking"],
-    }),
-
-    getAllActiveUsers: builder.query<ApiResponse<ActiveTrackingUser[]>, void>({
-      query: () => "/realtime/all-active-users",
-      providesTags: ["Tracking"],
-    }),
-
-    getUserLocation: builder.query<ApiResponse<LocationUpdate>, string>({
-      query: (userId) => `/realtime/user/${userId}/location`,
-      providesTags: (result, error, userId) => [
-        { type: "Location", id: userId },
-      ],
-    }),
-
-    startTracking: builder.mutation<ApiResponse, void>({
-      query: () => ({
-        url: "/realtime/start-tracking",
-        method: "POST",
-      }),
-      invalidatesTags: ["Tracking"],
-    }),
-
-    stopTracking: builder.mutation<ApiResponse, void>({
-      query: () => ({
-        url: "/realtime/stop-tracking",
-        method: "POST",
-      }),
-      invalidatesTags: ["Tracking"],
-    }),
-
-    getTrackingStats: builder.query<ApiResponse<TrackingStats>, void>({
-      query: () => "/tracking/stats",
-      providesTags: ["Tracking"],
-    }),
-
-    getUserTrackingStats: builder.query<
-      ApiResponse<UserTrackingStats[]>,
-      TrackingFilters
-    >({
-      query: (params) => ({
-        url: "/tracking/user-stats",
-        params,
-      }),
-      providesTags: ["Tracking"],
-    }),
-
-    getRouteData: builder.query<
-      ApiResponse<RouteData>,
-      { userId: string; startDate: string; endDate: string }
-    >({
-      query: ({ userId, startDate, endDate }) => ({
-        url: `/tracking/route/${userId}`,
-        params: { startDate, endDate },
-      }),
-      providesTags: ["Tracking"],
-    }),
   }),
 });
 
 export const {
+  // Delivery User hooks
   useUpdateLocationMutation,
   useGetCurrentLocationQuery,
   useGetLocationHistoryQuery,
   useCreateEmergencyRequestMutation,
+  useStartTrackingMutation,
+  useStopTrackingMutation,
+
+  // Organization Admin hooks
+  useGetActiveLocationsQuery,
+  useGetUserLocationQuery,
+  useGetUserLocationHistoryQuery,
+  useGetEmergencyRequestsQuery,
+  useAcknowledgeEmergencyRequestMutation,
+  useResolveEmergencyRequestMutation,
+  useGetTrackingStatsQuery,
+
+  // Legacy hooks for backward compatibility
+  useGetActiveUsersQuery,
   useGetEmergencyHistoryQuery,
   useAcknowledgeEmergencyMutation,
   useResolveEmergencyMutation,
-  useGetActiveUsersQuery,
-  useGetAllActiveUsersQuery,
-  useGetUserLocationQuery,
-  useStartTrackingMutation,
-  useStopTrackingMutation,
-  useGetTrackingStatsQuery,
-  useGetUserTrackingStatsQuery,
-  useGetRouteDataQuery,
 } = trackingApi;

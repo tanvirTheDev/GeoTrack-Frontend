@@ -13,11 +13,12 @@ const baseQuery = fetchBaseQuery({
 
     const token = localStorage.getItem("accessToken");
     console.log(
-      "🔑 Token for endpoint:",
+      "🔑 BaseQuery - Token for endpoint:",
       endpoint,
       ":",
       token ? "Present" : "Missing"
     );
+    console.log("🔑 BaseQuery - Full token:", token);
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }

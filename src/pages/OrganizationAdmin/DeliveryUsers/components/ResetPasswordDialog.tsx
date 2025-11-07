@@ -1,7 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "../../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +6,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../../../components/ui/dialog";
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -17,27 +14,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../../components/ui/form";
-import { Input } from "../../../../components/ui/input";
-import { useToast } from "../../../../hooks/use-toast";
-import {
-  ResetPasswordFormData,
-  resetPasswordSchema,
-} from "../../../../schemas/organizationAdmin.schemas";
-import { organizationAdminService } from "../../../../services/organizationAdminService";
-import { OrganizationAdmin } from "../../../../types/organizationAdmin.types";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { deliveryUserService } from "@/services/deliveryUserService";
+import { DeliveryUser } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 interface ResetPasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  admin: OrganizationAdmin;
+  user: DeliveryUser;
   onSuccess: () => void;
 }
 
 const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   open,
   onOpenChange,
-  admin,
+  user,
   onSuccess,
 }) => {
   const { toast } = useToast();
@@ -54,23 +69,21 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
       setLoading(true);
-      const response =
-        await organizationAdminService.resetOrganizationAdminPassword(
-          admin._id,
-          {
-            token: "", // Not needed for admin reset
-            password: data.newPassword,
-            confirmPassword: data.confirmPassword,
-          }
-        );
+      const response = await deliveryUserService.resetDeliveryUserPassword(
+        user._id,
+        {
+          password: data.newPassword,
+          confirmPassword: data.confirmPassword,
+        }
+      );
 
       if (response.success) {
-        onSuccess();
         form.reset();
+        onSuccess();
       } else {
         toast({
           title: "Error",
-          description: response.message,
+          description: response.message || "Failed to reset password",
           variant: "destructive",
         });
       }
@@ -87,14 +100,14 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Reset Password</DialogTitle>
           <DialogDescription>
-            Reset the password for {admin.name} ({admin.email}).
+            Reset the password for {user.name}. The user will need to use this
+            new password to log in.
           </DialogDescription>
         </DialogHeader>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -105,20 +118,19 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
                       placeholder="Enter new password"
+                      type="password"
                       {...field}
                     />
                   </FormControl>
                   <FormMessage />
-                  <div className="text-xs text-gray-500 mt-1">
-                    Password must contain at least 8 characters with uppercase,
-                    lowercase, number, and special character (@$!%*?&)
-                  </div>
+                  <p className="text-xs text-gray-500">
+                    Must contain uppercase, lowercase, number, and special
+                    character
+                  </p>
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="confirmPassword"
@@ -127,8 +139,8 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
                       placeholder="Confirm new password"
+                      type="password"
                       {...field}
                     />
                   </FormControl>
@@ -136,7 +148,6 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                 </FormItem>
               )}
             />
-
             <DialogFooter>
               <Button
                 type="button"

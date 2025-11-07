@@ -1,207 +1,170 @@
-import {
-  BaseEntity,
-  DeviceInfo,
-  EmergencyPriority,
-  EmergencyStatus,
-  Location,
-  TrackingStatus,
-} from "./common.types";
+export interface Location {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  altitude?: number;
+  speed?: number;
+  heading?: number;
+  timestamp: Date;
+}
 
-export interface LocationUpdate extends BaseEntity {
-  userId: string;
-  userName: string;
-  organizationId: string;
-  organizationName: string;
+export interface LocationTracking {
+  _id: string;
+  userId:
+    | string
+    | {
+        _id: string;
+        name: string;
+        email: string;
+        role?: string;
+      };
+  organizationId:
+    | string
+    | {
+        _id: string;
+        name: string;
+        companyName?: string;
+      };
   location: Location;
-  deviceInfo?: DeviceInfo;
   isActive: boolean;
   batteryLevel?: number;
-  networkType?: string;
-  accuracy?: number;
-  speed?: number;
-  heading?: number;
-  altitude?: number;
+  networkType?: "wifi" | "4g" | "5g" | "3g" | "2g" | "unknown";
+  deviceInfo?: {
+    model?: string;
+    os?: string;
+    appVersion?: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface LocationHistory extends BaseEntity {
-  userId: string;
-  userName: string;
-  organizationId: string;
-  organizationName: string;
-  location: Location;
-  deviceInfo?: DeviceInfo;
-  timestamp: string;
-  batteryLevel?: number;
-  networkType?: string;
-  accuracy?: number;
-  speed?: number;
-  heading?: number;
-  altitude?: number;
+export interface LocationHistory {
+  _id: string;
+  userId:
+    | string
+    | {
+        _id: string;
+        name: string;
+        email: string;
+      };
+  organizationId:
+    | string
+    | {
+        _id: string;
+        name: string;
+        companyName?: string;
+      };
+  locations: Location[];
+  date: Date;
+  totalDistance?: number;
+  totalTime?: number;
+  averageSpeed?: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface TrackingHistory extends BaseEntity {
-  userId: string;
-  userName: string;
+export interface EmergencyRequest {
+  _id: string;
+  userId:
+    | string
+    | {
+        _id: string;
+        name: string;
+        email: string;
+        phone?: string;
+      };
   organizationId: string;
-  organizationName: string;
-  startTime: string;
-  endTime?: string;
-  totalDistance: number;
-  averageSpeed: number;
-  locations: LocationHistory[];
-  emergencyRequests: EmergencyRequest[];
-  status: "completed" | "in_progress" | "cancelled";
-}
-
-export interface EmergencyRequest extends BaseEntity {
-  userId: string;
-  userName: string;
-  organizationId: string;
-  organizationName: string;
   location: Location;
   message?: string;
-  priority: EmergencyPriority;
-  status: EmergencyStatus;
-  acknowledgedBy?: string;
-  acknowledgedAt?: string;
-  resolvedBy?: string;
-  resolvedAt?: string;
-  deviceInfo?: DeviceInfo;
-  responseTime?: number; // in seconds
+  status: "pending" | "acknowledged" | "resolved";
+  priority: "low" | "medium" | "high" | "critical";
+  createdAt: Date;
+  acknowledgedAt?: Date;
+  resolvedAt?: Date;
+  acknowledgedBy?:
+    | string
+    | {
+        _id: string;
+        name: string;
+        email: string;
+      };
+  resolvedBy?:
+    | string
+    | {
+        _id: string;
+        name: string;
+        email: string;
+      };
 }
 
-export interface CreateEmergencyRequest {
-  location: Location;
-  message?: string;
-  priority?: EmergencyPriority;
-  deviceInfo?: DeviceInfo;
-}
-
-export interface UpdateLocationRequest {
-  location: Location;
-  deviceInfo?: DeviceInfo;
+export interface TrackingStats {
+  totalUsers: number;
+  activeTracking: number;
+  totalEmergencyRequests: number;
+  pendingEmergencyRequests: number;
+  resolvedEmergencyRequests: number;
+  trackingPercentage: number;
+  emergencyResolutionRate: number;
 }
 
 export interface TrackingFilters {
-  userId?: string;
-  organizationId?: string;
   startDate?: string;
   endDate?: string;
-  status?: TrackingStatus;
-  priority?: EmergencyPriority;
+  userId?: string;
+  status?: "pending" | "acknowledged" | "resolved";
+  priority?: "low" | "medium" | "high" | "critical";
   page?: number;
   limit?: number;
 }
 
-export interface ActiveTrackingUser {
-  userId: string;
-  userName: string;
-  organizationId: string;
-  organizationName: string;
-  currentLocation: Location;
-  lastUpdate: string;
-  isActive: boolean;
+// Legacy types for backward compatibility
+export interface TrackingData extends LocationTracking {}
+export interface ActiveTrackingUser extends LocationTracking {}
+
+// Request/Response types
+export interface UpdateLocationRequest {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  altitude?: number;
+  speed?: number;
+  heading?: number;
   batteryLevel?: number;
-  networkType?: string;
-  deviceInfo?: DeviceInfo;
-  trackingStartedAt: string;
-  totalDistance?: number;
-  averageSpeed?: number;
+  networkType?: "wifi" | "4g" | "5g" | "3g" | "2g" | "unknown";
+  deviceInfo?: {
+    model?: string;
+    os?: string;
+    appVersion?: string;
+  };
 }
 
-export interface TrackingStats {
-  totalActiveUsers: number;
-  totalDistance: number;
-  averageSpeed: number;
-  emergencyRequests: number;
-  pendingEmergencies: number;
-  resolvedEmergencies: number;
-  averageResponseTime: number;
+export interface CreateEmergencyRequest {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  message?: string;
+  priority?: "low" | "medium" | "high" | "critical";
 }
+
+export interface LocationUpdate extends LocationTracking {}
 
 export interface UserTrackingStats {
   userId: string;
   userName: string;
+  totalLocations: number;
   totalDistance: number;
   averageSpeed: number;
-  totalTime: number;
-  emergencyRequests: number;
-  lastActive: string;
-  isCurrentlyActive: boolean;
+  lastSeen: Date;
+  isActive: boolean;
 }
 
 export interface RouteData {
   userId: string;
   userName: string;
-  startTime: string;
-  endTime: string;
+  locations: Location[];
   totalDistance: number;
+  totalTime: number;
   averageSpeed: number;
-  locations: LocationHistory[];
-  emergencyRequests: EmergencyRequest[];
-}
-
-export interface RealtimeLocationUpdate {
-  userId: string;
-  userName: string;
-  organizationId: string;
-  organizationName: string;
-  location: Location;
-  timestamp: string;
-  isActive: boolean;
-  batteryLevel?: number;
-  networkType?: string;
-  deviceInfo?: DeviceInfo;
-}
-
-export interface TrackingSession {
-  sessionId: string;
-  userId: string;
-  userName: string;
-  organizationId: string;
-  startTime: string;
-  endTime?: string;
-  isActive: boolean;
-  totalDistance: number;
-  averageSpeed: number;
-  locations: LocationHistory[];
-  emergencyRequests: EmergencyRequest[];
-}
-
-export interface MapBounds {
-  north: number;
-  south: number;
-  east: number;
-  west: number;
-}
-
-export interface TrackingHeatmapData {
-  location: Location;
-  intensity: number;
-  timestamp: string;
-  userId: string;
-}
-
-export interface Geofence {
-  id: string;
-  name: string;
-  center: Location;
-  radius: number; // in meters
-  isActive: boolean;
-  organizationId: string;
-  alertOnEnter: boolean;
-  alertOnExit: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface GeofenceAlert {
-  id: string;
-  geofenceId: string;
-  userId: string;
-  userName: string;
-  type: "enter" | "exit";
-  location: Location;
-  timestamp: string;
-  isRead: boolean;
+  startTime: Date;
+  endTime: Date;
 }

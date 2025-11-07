@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
+  BarChart,
   BarChart3,
   Building2,
   LogOut,
@@ -44,8 +45,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      await logout();
-      navigate("/auth/login");
+      const res = await logout();
+      console.log(res);
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -58,7 +60,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       href:
         user?.role === "SUPER_ADMIN"
           ? "/super-admin/dashboard"
-          : "/admin/dashboard",
+          : "/organization-admin/dashboard",
       icon: BarChart3,
       roles: ["SUPER_ADMIN", "ORGANIZATION_ADMIN", "DELIVERY_USER"],
     },
@@ -75,15 +77,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       roles: ["SUPER_ADMIN"],
     },
     {
-      name: "Users",
+      name: "Delivery Users",
       href:
-        user?.role === "SUPER_ADMIN" ? "/super-admin/users" : "/admin/users",
+        user?.role === "SUPER_ADMIN"
+          ? "/super-admin/delivery-users"
+          : "/organization-admin/delivery-users",
       icon: Users,
       roles: ["SUPER_ADMIN", "ORGANIZATION_ADMIN"],
     },
     {
       name: "Live Tracking",
-      href: "/admin/live-tracking",
+      href: "/organization-admin/live-tracking",
       icon: MapPin,
       roles: ["SUPER_ADMIN", "ORGANIZATION_ADMIN", "DELIVERY_USER"],
     },
@@ -92,8 +96,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       href:
         user?.role === "SUPER_ADMIN"
           ? "/super-admin/reports"
-          : "/admin/reports",
-      icon: BarChart3,
+          : "/organization-admin/reports",
+      icon: BarChart,
       roles: ["SUPER_ADMIN", "ORGANIZATION_ADMIN"],
     },
     {
@@ -104,7 +108,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     },
     {
       name: "Settings",
-      href: "/admin/settings",
+      href: "/organization-admin/settings",
       icon: Settings,
       roles: ["SUPER_ADMIN", "ORGANIZATION_ADMIN"],
     },

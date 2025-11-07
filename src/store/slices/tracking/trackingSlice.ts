@@ -57,8 +57,8 @@ const trackingSlice = createSlice({
       if (userIndex !== -1) {
         state.activeUsers[userIndex] = {
           ...state.activeUsers[userIndex],
-          currentLocation: action.payload.location,
-          lastUpdate: action.payload.updatedAt,
+          location: action.payload.location,
+          updatedAt: action.payload.updatedAt,
           batteryLevel: action.payload.batteryLevel,
           networkType: action.payload.networkType,
         };

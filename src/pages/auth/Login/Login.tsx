@@ -79,6 +79,17 @@ const Login: React.FC = () => {
     }
   };
 
+  const fillCredentials = (email: string, password: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      email,
+      password,
+    }));
+    // Clear any existing errors
+    setErrors({});
+    clearError();
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
@@ -158,6 +169,49 @@ const Login: React.FC = () => {
           >
             Forgot your password?
           </a>
+        </div>
+
+        {/* Development Credentials Section */}
+        <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+            Development Credentials
+          </h3>
+          <div className="space-y-2">
+            <div className="flex flex-col space-y-1">
+              <span className="text-xs font-medium text-gray-600">
+                Super Admin
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  fillCredentials("superadmin@geotrack.com", "NewPassword123!")
+                }
+                className="text-xs h-8"
+                disabled={isLoading}
+              >
+                Fill Super Admin Credentials
+              </Button>
+            </div>
+            <div className="flex flex-col space-y-1">
+              <span className="text-xs font-medium text-gray-600">
+                Organization Admin
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  fillCredentials("shakibadmin@gmail.com", "Shakib@420")
+                }
+                className="text-xs h-8"
+                disabled={isLoading}
+              >
+                Fill Org Admin Credentials
+              </Button>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

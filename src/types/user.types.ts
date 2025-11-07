@@ -1,28 +1,7 @@
-import { BaseEntity, UserRole } from "./common.types";
-
-export interface User extends BaseEntity {
-  name: string;
-  email: string;
-  phone?: string;
-  role: UserRole;
-  organizationId?: string;
-  organizationName?: string;
-  isActive: boolean;
-  lastLoginAt?: string;
-  profileImage?: string;
-  address?: {
-    street: string;
-    city: string;
-    state: string;
-    country: string;
-    zipCode: string;
-  };
-  preferences?: {
-    notifications: boolean;
-    theme: "light" | "dark" | "system";
-    language: string;
-  };
-}
+import { User } from "./auth.types";
+import { UserRole } from "./common.types";
+// Re-export User from auth.types to avoid duplication
+export type { User } from "./auth.types";
 
 export interface CreateUserRequest {
   name: string;

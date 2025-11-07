@@ -109,6 +109,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Store user in localStorage for SocketContext
         localStorage.setItem("user", JSON.stringify(user));
 
+        console.log("🔑 AuthContext - Tokens stored:", {
+          accessToken: accessToken ? "Present" : "Missing",
+          refreshToken: refreshToken ? "Present" : "Missing",
+        });
+
         // Return user data and dashboard URL for the component to handle redirect
         return { user, dashboardUrl: response.data.dashboardUrl };
       }
@@ -131,7 +136,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       dispatch(logout());
 
       // Redirect to login
-      window.location.href = "/auth/login";
+      window.location.href = "/login";
     }
   };
 

@@ -65,14 +65,8 @@ export interface DateRange {
   endDate: string;
 }
 
-export interface Location {
-  latitude: number;
-  longitude: number;
-  accuracy?: number;
-  altitude?: number;
-  speed?: number;
-  heading?: number;
-}
+// Re-export Location from tracking.types to avoid duplication
+export type { Location } from "./tracking.types";
 
 export interface Address {
   street: string;

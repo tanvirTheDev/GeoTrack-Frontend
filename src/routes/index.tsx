@@ -21,10 +21,10 @@ const AppRoutes: React.FC = () => {
       return "/super-admin/dashboard";
     } else if (user?.role === "ORGANIZATION_ADMIN") {
       console.log("Redirecting to Organization Admin dashboard");
-      return "/admin/dashboard";
+      return "/organization-admin/dashboard";
     } else {
       console.log("Redirecting to default admin dashboard");
-      return "/admin/dashboard"; // Default for delivery users
+      return "/delivery-user/dashboard"; // Default for delivery users
     }
   };
 
@@ -32,7 +32,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route path="/auth/*" element={<AuthRoutes />} />
       <Route path="/super-admin/*" element={<SuperAdminRoutes />} />
-      <Route path="/admin/*" element={<AdminRoutes />} />
+      <Route path="/organization-admin/*" element={<AdminRoutes />} />
       <Route path="/" element={<Navigate to={getDefaultRoute()} replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
